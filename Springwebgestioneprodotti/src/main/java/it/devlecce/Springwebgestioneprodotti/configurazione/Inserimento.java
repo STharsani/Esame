@@ -28,7 +28,7 @@ public class Inserimento {
 
             Prodotto p1 = new Prodotto("Pane", 1f, 2f, datadiscadenza, datadiacquisto, 1f);
 
-        logger.info(("nome: "+p1.getNome()+"prezzo: "+p1.getPrezzo()+"quantità: " "data di scadenza: "+p1.getDatadiscadenza()+);
+        logger.info("nome: "+p1.getNome()+" prezzo: "+p1.getPrezzo()+" quantità: "+p1.getQuantità()+" data di scadenza: "+p1.getDatadiscadenza()+" data di acquisto: "+p1.getDatadiacquisto()+" ranking: "+p1.getRanking());
 
             datadiscadenza = dateFormat.parse("23-04-2022");
             datadiacquisto = dateFormat.parse("12-04-2022");
