@@ -7,7 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -47,8 +49,8 @@ public class ProdottoRestController {
 
     @PutMapping("/prodotto")
 
-    public Prodotto aggiornaDatiProdotto(@RequestBody Prodotto utente) {
-        return repository.save(utente);
+    public Prodotto aggiornaDatiProdotto(@RequestBody Prodotto prodotto) {
+        return repository.save(prodotto);
     }
 
 
@@ -65,13 +67,68 @@ public class ProdottoRestController {
     }
 
     @GetMapping("/prodotto/datadiacquisto")
-    public  List<Prodotto> ricercaUtenteConDataDiRegistrazione (
-            @RequestParam(name="datada") @DateTimeFormat(pattern = "dd-MM-yyyy")
+    public List<Prodotto> ricercaUtenteConDataDiRegistrazione(
+            @RequestParam(name = "datada") @DateTimeFormat(pattern = "dd-MM-yyyy")
                     Date datada,
-            @RequestParam(name="dataa") @DateTimeFormat(pattern = "dd-MM-yyyy")
+            @RequestParam(name = "dataa") @DateTimeFormat(pattern = "dd-MM-yyyy")
 
                     Date dataa
-    ){
-        return  repository.findByDatadiacquistoBetween(datada, dataa);
+    ) {
+        return repository.findByDatadiacquistoBetween(datada, dataa);
+    }
+
+    @GetMapping("/prodotto/ranking")
+    public List<Prodotto> ricercaProdottoConRanking(
+            @RequestParam(name = "min") float min,
+            @RequestParam(name = "max") float max
+    ) {
+        return repository.findByRankingBetween(min, max);
+    }
+
+    @GetMapping("prodotto/rankingmin")
+    public List<Prodotto> ricercaProdottoConRankingMin(
+            @RequestParam(name = "min") float min
+
+    ) {
+        return repository.findByRankingLessThan(min);
+    }
+
+    @PostMapping("/caricafile")
+
+    public String caricaFile(@RequestParam("file") MultipartFile file) {
+        String infoFile = file.getOriginalFilename() + " - " + file.getContentType();
+        String conFormat = String.format("%S-%S", file.getOriginalFilename(), file.getContentType());
+        logger.info((infoFile));
+        logger.warn(conFormat);
+        return conFormat;
+    }
+
+    @GetMapping("/prodotto/prezzo")
+    public ArrayList<String> ricercaProdottoConPrezzo(
+            @RequestParam(name = "max") float max
+    ) {
+        ArrayList<String> prodotti = new ArrayList<>();
+        List<Prodotto> prodottiFiltati = repository.findByPrezzoLessThan(max);
+        for (Prodotto p : prodottiFiltati) {
+            prodotti.add(p.getNome());
+        }
+        return prodotti;
+    }
+
+    @GetMapping("/prodotto/nome")
+    public List<Prodotto> trovaProdottoConNome(@RequestParam String nome) {
+        return repository.findByNome(nome);
+
+    }
+
+    @GetMapping("prodotto/quantità")
+    public List<Prodotto> ricercaProdottoConQuantità(
+            @RequestParam(name = "max") float max
+
+    ) {
+        return repository.findByQuantitàLessThan(max);
     }
 }
+
+
+
